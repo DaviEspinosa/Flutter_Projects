@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:159328590842:android:fc946ee6095fbfb3882243",
         "android_client_info": {
-          "package_name": "qr.code.application"
+          "package_name": "com.example.qr_code_app"
         }
       },
       "oauth_client": [],
