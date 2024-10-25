@@ -1,21 +1,40 @@
 {
   "project_info": {
-    "project_number": "159328590842",
-    "project_id": "somativasenai",
-    "storage_bucket": "somativasenai.appspot.com"
+    "project_number": "84492058400",
+    "project_id": "flutter-qr-code-app",
+    "storage_bucket": "flutter-qr-code-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:159328590842:android:fc946ee6095fbfb3882243",
+        "mobilesdk_app_id": "1:84492058400:android:fb2c843fa4f51ac248a145",
         "android_client_info": {
-          "package_name": "com.example.qr_code_app"
+          "package_name": "com.exa"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAmyomIwGx389NYWLAZhyWyn_Qd6JOK7cc"
+          "current_key": "AIzaSyBPHzKQlFo0HmiAZWXQXEHe2HVC52x_hfk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:84492058400:android:5809034d557818ad48a145",
+        "android_client_info": {
+          "package_name": "com.example.qrcodeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPHzKQlFo0HmiAZWXQXEHe2HVC52x_hfk"
         }
       ],
       "services": {

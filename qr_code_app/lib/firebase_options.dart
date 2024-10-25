@@ -41,46 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyArzAblGffXoqYorBRo4Jyu8IYGXxtJjYk',
-    appId: '1:159328590842:web:eae9fe61cd6249e5882243',
-    messagingSenderId: '159328590842',
-    projectId: 'somativasenai',
-    authDomain: 'somativasenai.firebaseapp.com',
-    storageBucket: 'somativasenai.appspot.com',
+    apiKey: 'AIzaSyBfjCpxvzFimg2yJe3421NDMZwo7jciVFg',
+    appId: '1:84492058400:web:efe6f4a9a6e7111648a145',
+    messagingSenderId: '84492058400',
+    projectId: 'flutter-qr-code-app',
+    authDomain: 'flutter-qr-code-app.firebaseapp.com',
+    storageBucket: 'flutter-qr-code-app.appspot.com',
+    measurementId: 'G-M38X1HW6D1',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAmyomIwGx389NYWLAZhyWyn_Qd6JOK7cc',
-    appId: '1:159328590842:android:fc946ee6095fbfb3882243',
-    messagingSenderId: '159328590842',
-    projectId: 'somativasenai',
-    storageBucket: 'somativasenai.appspot.com',
+    apiKey: 'AIzaSyBPHzKQlFo0HmiAZWXQXEHe2HVC52x_hfk',
+    appId: '1:84492058400:android:fb2c843fa4f51ac248a145',
+    messagingSenderId: '84492058400',
+    projectId: 'flutter-qr-code-app',
+    storageBucket: 'flutter-qr-code-app.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD2kT2zJMzYOtfIxeVM-fwJ4rqB_PmGcyM',
-    appId: '1:159328590842:ios:87e83cfe77b7d5ef882243',
-    messagingSenderId: '159328590842',
-    projectId: 'somativasenai',
-    storageBucket: 'somativasenai.appspot.com',
+    apiKey: 'AIzaSyAGjMbBsgg3W1JfS32FBp5oboQBHvexV0s',
+    appId: '1:84492058400:ios:b568dee9856d762248a145',
+    messagingSenderId: '84492058400',
+    projectId: 'flutter-qr-code-app',
+    storageBucket: 'flutter-qr-code-app.appspot.com',
     iosBundleId: 'com.example.qrCodeApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD2kT2zJMzYOtfIxeVM-fwJ4rqB_PmGcyM',
-    appId: '1:159328590842:ios:87e83cfe77b7d5ef882243',
-    messagingSenderId: '159328590842',
-    projectId: 'somativasenai',
-    storageBucket: 'somativasenai.appspot.com',
+    apiKey: 'AIzaSyAGjMbBsgg3W1JfS32FBp5oboQBHvexV0s',
+    appId: '1:84492058400:ios:b568dee9856d762248a145',
+    messagingSenderId: '84492058400',
+    projectId: 'flutter-qr-code-app',
+    storageBucket: 'flutter-qr-code-app.appspot.com',
     iosBundleId: 'com.example.qrCodeApp',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyArzAblGffXoqYorBRo4Jyu8IYGXxtJjYk',
-    appId: '1:159328590842:web:8383e09a38fab9f5882243',
-    messagingSenderId: '159328590842',
-    projectId: 'somativasenai',
-    authDomain: 'somativasenai.firebaseapp.com',
-    storageBucket: 'somativasenai.appspot.com',
+    apiKey: 'AIzaSyBfjCpxvzFimg2yJe3421NDMZwo7jciVFg',
+    appId: '1:84492058400:web:ccb4a9873c2949ea48a145',
+    messagingSenderId: '84492058400',
+    projectId: 'flutter-qr-code-app',
+    authDomain: 'flutter-qr-code-app.firebaseapp.com',
+    storageBucket: 'flutter-qr-code-app.appspot.com',
+    measurementId: 'G-4PVR0XRJ6W',
   );
+
 }
