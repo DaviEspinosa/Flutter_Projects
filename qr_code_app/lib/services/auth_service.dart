@@ -7,8 +7,6 @@ class AuthService {
 
   Future<User?> signUp(String nome, email, String password, String bloco, String numeApartamento, String cpf) async {
     UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      
-      // nome: nome,
       email: email,
       password: password,
 
@@ -19,13 +17,19 @@ class AuthService {
 
         // Após criar o usuário, salvar informações adicionais no Firestore
     if (user != null) {
-      await _firestore.collection('users').doc(user.uid).set({
-        'nome': nome,
-        'bloco': bloco,
-        'numeroApartamento': numeApartamento,
-        'cpf': cpf,
-      });
+      try {
+  await _firestore.collection('users').doc(user.uid).set({
+    'nome': nome,
+    'bloco': bloco,
+    'numeroApartamento': numeApartamento,
+    'cpf': cpf,
+  });
+} catch (e) {
+  print('Erro ao cadastrar no Firestore: $e');
+}
     }
-    return userCredential.user;
+    return user;
   }
 }
+
+
