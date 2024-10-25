@@ -21,11 +21,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String password = _passwordController.text;
     String nome = _nomeController.text;
     String bloco = _blocoController.text;
-    String _numeroApartamento = _numeroApartamentoController.text;
+    String numeroApartamento = _numeroApartamentoController.text;
     String cpf = _cpfController.text;
 
     try {
-      await _authService.signUp(email, password);
+      await _authService.signUp(nome, email, password, bloco, numeroApartamento, cpf);
       // Navegar para a próxima tela ou exibir uma mensagem de sucesso
     } catch (e) {
       // Exibir erro ao usuário
@@ -42,12 +42,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Column(
           children: [
             TextField(
+              controller: _nomeController,
+              decoration: InputDecoration(labelText: 'Nome'),
+            ),
+            TextField(
               controller: _emailController,
               decoration: InputDecoration(labelText: 'Email'),
             ),
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(labelText: 'Senha'),
+              obscureText: true,
+            ),
+            TextField(
+              controller: _blocoController,
+              decoration: InputDecoration(labelText: 'Bloco'),
+              obscureText: true,
+            ),
+            TextField(
+              controller: _numeroApartamentoController,
+              decoration: InputDecoration(labelText: 'Número Apartamento'),
+              obscureText: true,
+            ),
+            TextField(
+              controller: _cpfController,
+              decoration: InputDecoration(labelText: 'CPF'),
               obscureText: true,
             ),
             SizedBox(height: 20),
