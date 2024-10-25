@@ -19,32 +19,48 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
+        title: Text('Gerenciamento'),
+         leading: Icon(Icons.home),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () => _logout(context),
           ),
+          CircleAvatar(
+            backgroundColor: Colors.orange,
+            child: Text(
+              user?.email?.substring(0, 1).toUpperCase() ?? 'D',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          SizedBox(width: 16),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Bem-vindo, ${user?.email}!',
-              style: TextStyle(fontSize: 20),
+      body: ListView(
+        padding: EdgeInsets.all(16),
+        children: [
+          ListTile(
+            leading: Icon(Icons.edit, color: Colors.blue, size: 32),
+            title: Text(
+              'Adicionar Visitante',
+              style: TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Aqui você pode adicionar funcionalidades para cadastrar visitantes
-                // Por exemplo, navegar para a página de cadastro de visitantes
-              },
-              child: Text('Cadastrar Visitante'),
+            onTap: () {
+              // Ação para adicionar visitante
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.list, color: Colors.blue, size: 32),
+            title: Text(
+              'Listagem de Visitantes',
+              style: TextStyle(fontSize: 18),
             ),
-          ],
-        ),
+            onTap: () {
+              // Ação para listar visitantes
+            },
+          ),
+        ],
       ),
     );
   }
