@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../services/auth_service.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -32,6 +33,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       print(e.toString());
     }
   }
+    // setState(() {
+    //   qrData = 'CPF: $cpf';
+    // });
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +73,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               decoration: InputDecoration(labelText: 'CPF'),
               obscureText: true,
             ),
+            // QrImage(data: _nomeController),
+            
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _signUp,
