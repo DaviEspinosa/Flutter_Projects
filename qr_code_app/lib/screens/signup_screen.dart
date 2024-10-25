@@ -8,6 +8,8 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+
+  // Criando atributos para controle de Texto
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nomeController = TextEditingController();
@@ -16,6 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _cpfController = TextEditingController();
   final _authService = AuthService();
 
+  // Pega o text para cadastrar
   void _signUp() async {
     String email = _emailController.text;
     String password = _passwordController.text;
