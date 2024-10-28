@@ -24,13 +24,14 @@ class AuthService {
           'bloco': bloco,
           'numeroApartamento': numeroApartamento,
           'cpf': cpf,
+          // 'qrCodeValor': cpf,
         });
       }
 
       return user; // Retorna o usuário criado
     } catch (e) {
       print("Erro ao criar usuário: $e"); // Log do erro
-      return null; // Retorna null em caso de erro
+      throw Exception("Falha no cadastro do usuário: $e"); // Lança a exceção com o erro
     }
   }
 }
