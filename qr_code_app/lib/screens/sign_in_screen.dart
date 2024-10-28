@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPageScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Login do Morador'),
-        leading: Icon(Icons.home), // Ícone de casa à esquerda
+        leading: Icon(Icons.home),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -43,35 +43,51 @@ class _LoginPageState extends State<LoginPageScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.8, // 80% da largura
+                child: TextField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                      borderSide: BorderSide(color: Colors.blue, width: 3.5),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                      borderSide: BorderSide(color: Colors.blue, width: 3.5),
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: 7),
-              TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Senha',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(color: const Color.fromARGB(255, 33, 150, 243), width: 2.0),
+              SizedBox(height: 10),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.8, // 80% da largura
+                child: TextField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    labelText: 'Senha',
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                      borderSide: BorderSide(color: Colors.blue, width: 3.5),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                      borderSide: BorderSide(color: Colors.blue, width: 3.5),
+                    ),
                   ),
+                  obscureText: true,
                 ),
-                obscureText: true,
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  padding: EdgeInsets.symmetric(horizontal: 160, vertical: 15),
                   backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white, // Cor do texto do botão
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(50),
                   ),
                 ),
                 onPressed: _login,

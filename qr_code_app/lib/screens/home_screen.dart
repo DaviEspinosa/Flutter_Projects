@@ -1,15 +1,128 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:qr_code_app/services/auth_service.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qr_code_app/screens/sign_in_screen.dart';
 
 class HomePage extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final AuthService _visitorService = AuthService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> _logout(BuildContext context) async {
     await _auth.signOut();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => LoginPageScreen()),
+    );
+  }
+
+  void _showAddVisitorDialog(BuildContext context) {
+    final TextEditingController _nameController = TextEditingController();
+    final TextEditingController _cpfController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text('Adicionar Visitante'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: InputDecoration(labelText: 'Nome'),
+              ),
+              TextField(
+                controller: _cpfController,
+                decoration: InputDecoration(labelText: 'CPF'),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop(); // Fecha o diálogo sem salvar
+              },
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                String name = _nameController.text.trim();
+                String cpf = _cpfController.text.trim();
+
+                if (name.isNotEmpty && cpf.isNotEmpty) {
+                  try {
+                    await _visitorService.signUpVisitor(name, cpf);
+                    Navigator.of(ctx).pop(); // Fecha o diálogo após salvar
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Visitante adicionado com sucesso!')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Erro ao adicionar visitante: $e')),
+                    );
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Preencha todos os campos')),
+                  );
+                }
+              },
+              child: Text('Salvar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _downloadQRCode(String cpf) async {
+    // Função para gerar o QR Code a partir do CPF e salvar como imagem
+    final qrCodeImage = await QrPainter(
+      data: cpf,
+      version: QrVersions.auto,
+      gapless: false,
+    ).toImage(300);
+
+    // Implementação para salvar a imagem (conforme o dispositivo e permissões)
+    // ...
+  }
+
+  Widget _buildVisitorList(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection('visitors').snapshots(),
+      builder: (ctx, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        final visitors = snapshot.data?.docs ?? [];
+
+        if (visitors.isEmpty) {
+          return Center(child: Text('Nenhum visitante cadastrado.'));
+        }
+
+        return ListView.builder(
+          itemCount: visitors.length,
+          itemBuilder: (ctx, index) {
+            final visitor = visitors[index];
+            final nome = visitor['nome'];
+            final cpf = visitor['cpf'];
+
+            return ListTile(
+              title: Text('Nome: $nome'),
+              subtitle: Text('CPF: $cpf'),
+              trailing: IconButton(
+                icon: Icon(Icons.qr_code),
+                onPressed: () => _downloadQRCode(cpf),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -20,7 +133,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Gerenciamento'),
-         leading: Icon(Icons.home),
+        leading: Icon(Icons.home),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
@@ -46,7 +159,7 @@ class HomePage extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             onTap: () {
-              // Ação para adicionar visitante
+              _showAddVisitorDialog(context);
             },
           ),
           Divider(),
@@ -57,7 +170,13 @@ class HomePage extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             onTap: () {
-              // Ação para listar visitantes
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (ctx) => Scaffold(
+                  appBar: AppBar(title: Text('Visitantes')),
+                  body: _buildVisitorList(context),
+                )),
+              );
             },
           ),
         ],
