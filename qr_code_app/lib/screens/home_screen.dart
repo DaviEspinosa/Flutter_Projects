@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/rendering.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qr_code_app/services/auth_service.dart';
 import 'package:qr_code_app/screens/sign_in_screen.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 class HomePage extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -81,60 +77,40 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Future<void> _saveQRCode(BuildContext context, GlobalKey qrKey) async {
-    try {
-      RenderRepaintBoundary boundary = qrKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage();
-      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      Uint8List pngBytes = byteData!.buffer.asUint8List();
-
-      final result = await ImageGallerySaver.saveImage(pngBytes);
-      if (result['isSuccess']) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('QR Code salvo na galeria com sucesso!')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao salvar QR Code na galeria')),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao salvar QR Code: $e')),
-      );
-    }
-  }
-
   void _showQRCodeDialog(BuildContext context, String cpf) {
-    final GlobalKey qrKey = GlobalKey();
-
     showDialog(
       context: context,
       builder: (ctx) {
-        return AlertDialog(
-          title: Text('QR Code do Visitante'),
-          content: RepaintBoundary(
-            key: qrKey,
-            child: QrImageView(
-              data: cpf,
-              version: QrVersions.auto,
-              size: 200.0,
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 16,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'QR Code do Visitante',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 16),
+                QrImageView(
+                  data: cpf,
+                  version: QrVersions.auto,
+                  size: 200.0,
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop(); // Fecha o diálogo
+                  },
+                  child: Text('Fechar'),
+                ),
+              ],
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop(); // Fecha o diálogo
-              },
-              child: Text('Fechar'),
-            ),
-            TextButton(
-              onPressed: () async {
-                await _saveQRCode(context, qrKey); // Salva o QR Code na galeria
-              },
-              child: Text('Baixar'),
-            ),
-          ],
         );
       },
     );

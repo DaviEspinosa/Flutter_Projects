@@ -10,8 +10,7 @@
         "mobilesdk_app_id": "1:84492058400:android:fb2c843fa4f51ac248a145",
         "android_client_info": {
           "package_name": "com.example.qr_code_app"
-        }
-      },
+        }},
       "oauth_client": [],
       "api_key": [
         {
