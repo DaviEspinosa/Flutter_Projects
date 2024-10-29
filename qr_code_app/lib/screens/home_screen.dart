@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/rendering.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qr_code_app/services/auth_service.dart';
 import 'package:qr_code_app/screens/sign_in_screen.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 class HomePage extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -77,16 +81,45 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  Future<void> _saveQRCode(BuildContext context, GlobalKey qrKey) async {
+    try {
+      RenderRepaintBoundary boundary = qrKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage();
+      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+      final result = await ImageGallerySaver.saveImage(pngBytes);
+      if (result['isSuccess']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('QR Code salvo na galeria com sucesso!')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao salvar QR Code na galeria')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao salvar QR Code: $e')),
+      );
+    }
+  }
+
   void _showQRCodeDialog(BuildContext context, String cpf) {
+    final GlobalKey qrKey = GlobalKey();
+
     showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
           title: Text('QR Code do Visitante'),
-          content: QrImageView(
-            data: cpf,
-            version: QrVersions.auto,
-            size: 200.0,
+          content: RepaintBoundary(
+            key: qrKey,
+            child: QrImageView(
+              data: cpf,
+              version: QrVersions.auto,
+              size: 200.0,
+            ),
           ),
           actions: [
             TextButton(
@@ -94,6 +127,12 @@ class HomePage extends StatelessWidget {
                 Navigator.of(ctx).pop(); // Fecha o diálogo
               },
               child: Text('Fechar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await _saveQRCode(context, qrKey); // Salva o QR Code na galeria
+              },
+              child: Text('Baixar'),
             ),
           ],
         );
