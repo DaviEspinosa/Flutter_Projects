@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:qr_code_app/services/auth_service.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:qr_code_app/services/auth_service.dart';
 import 'package:qr_code_app/screens/sign_in_screen.dart';
 
 class HomePage extends StatelessWidget {
@@ -21,7 +21,6 @@ class HomePage extends StatelessWidget {
   void _showAddVisitorDialog(BuildContext context) {
     final TextEditingController _nameController = TextEditingController();
     final TextEditingController _cpfController = TextEditingController();
-
     showDialog(
       context: context,
       builder: (ctx) {
@@ -52,7 +51,6 @@ class HomePage extends StatelessWidget {
               onPressed: () async {
                 String name = _nameController.text.trim();
                 String cpf = _cpfController.text.trim();
-
                 if (name.isNotEmpty && cpf.isNotEmpty) {
                   try {
                     await _visitorService.signUpVisitor(name, cpf);
@@ -79,16 +77,28 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Future<void> _downloadQRCode(String cpf) async {
-    // Função para gerar o QR Code a partir do CPF e salvar como imagem
-    final qrCodeImage = await QrPainter(
-      data: cpf,
-      version: QrVersions.auto,
-      gapless: false,
-    ).toImage(300);
-
-    // Implementação para salvar a imagem (conforme o dispositivo e permissões)
-    // ...
+  void _showQRCodeDialog(BuildContext context, String cpf) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text('QR Code do Visitante'),
+          content: QrImageView(
+            data: cpf,
+            version: QrVersions.auto,
+            size: 200.0,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop(); // Fecha o diálogo
+              },
+              child: Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildVisitorList(BuildContext context) {
@@ -98,26 +108,22 @@ class HomePage extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         }
-
         final visitors = snapshot.data?.docs ?? [];
-
         if (visitors.isEmpty) {
           return Center(child: Text('Nenhum visitante cadastrado.'));
         }
-
         return ListView.builder(
           itemCount: visitors.length,
           itemBuilder: (ctx, index) {
             final visitor = visitors[index];
             final nome = visitor['nome'];
             final cpf = visitor['cpf'];
-
             return ListTile(
               title: Text('Nome: $nome'),
               subtitle: Text('CPF: $cpf'),
               trailing: IconButton(
                 icon: Icon(Icons.qr_code),
-                onPressed: () => _downloadQRCode(cpf),
+                onPressed: () => _showQRCodeDialog(context, cpf),
               ),
             );
           },
@@ -129,7 +135,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User? user = _auth.currentUser;
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Gerenciamento'),
