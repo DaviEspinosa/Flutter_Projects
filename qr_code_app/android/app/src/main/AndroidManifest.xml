@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.qr_code_app">  <!-- O atributo package deve estar aqui -->
 
+<uses-permission android:name="android.permission.CAMERA" />
+
+
     <application
         android:label="qr_code_app"
         android:name="${applicationName}"
