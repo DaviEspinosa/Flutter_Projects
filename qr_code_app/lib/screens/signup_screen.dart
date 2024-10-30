@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_app/screens/first_page.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import '../services/auth_service.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -10,9 +9,7 @@ class SignUpScreen extends StatefulWidget {
   _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-
-
-class _SignUpScreenState extends State<SignUpScreen> with WidgetsBindingObserver{
+class _SignUpScreenState extends State<SignUpScreen> with WidgetsBindingObserver {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nomeController = TextEditingController();
@@ -20,13 +17,7 @@ class _SignUpScreenState extends State<SignUpScreen> with WidgetsBindingObserver
   final _numeroApartamentoController = TextEditingController();
   final _cpfController = TextEditingController();
   final _authService = AuthService();
-
   bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   void _signUp() async {
     String email = _emailController.text.trim();
@@ -103,36 +94,42 @@ class _SignUpScreenState extends State<SignUpScreen> with WidgetsBindingObserver
       appBar: AppBar(
         title: Row(
           children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context, MaterialPageRoute(builder: (context) => FirstPage()),);
-              },
-            ),
             Text('Cadastro'),
           ],
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildStyledTextField(_nomeController, 'Nome', Icons.person),
-            _buildStyledTextField(_emailController, 'Email', Icons.email,
-                keyboardType: TextInputType.emailAddress),
-            _buildStyledTextField(_passwordController, 'Senha', Icons.lock,
-                obscureText: true),
+            Text(
+              'Bem-vindo!',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueAccent,
+              ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Preencha os campos abaixo para criar uma nova conta:',
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+            ),
+            SizedBox(height: 20),
+            _buildStyledTextField(_nomeController, 'Nome', Icons.person,),
+            _buildStyledTextField(_emailController, 'Email', Icons.email, keyboardType: TextInputType.emailAddress),
+            _buildStyledTextField(_passwordController, 'Senha', Icons.lock, obscureText: true),
             _buildStyledTextField(_blocoController, 'Bloco', Icons.home),
-            _buildStyledTextField(_numeroApartamentoController, 'Número Apartamento',
-                Icons.home_work, keyboardType: TextInputType.number),
+            _buildStyledTextField(_numeroApartamentoController, 'Número Apartamento', Icons.home_work, keyboardType: TextInputType.number),
             _buildStyledTextField(_cpfController, 'CPF', Icons.badge),
             SizedBox(height: 20),
             _isLoading
-                ? CircularProgressIndicator()
+                ? Center(child: CircularProgressIndicator())
                 : ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 160, vertical: 15),
-                      backgroundColor: Colors.blue,
+                      padding: EdgeInsets.symmetric(horizontal: 120, vertical: 15),
+                      backgroundColor: Colors.blueAccent,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
@@ -141,7 +138,7 @@ class _SignUpScreenState extends State<SignUpScreen> with WidgetsBindingObserver
                     onPressed: _signUp,
                     child: Text(
                       'Cadastrar',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 18),
                     ),
                   ),
           ],
@@ -150,13 +147,8 @@ class _SignUpScreenState extends State<SignUpScreen> with WidgetsBindingObserver
     );
   }
 
-  Widget _buildStyledTextField(
-    TextEditingController controller,
-    String label,
-    IconData icon, {
-    bool obscureText = false,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
+  Widget _buildStyledTextField(TextEditingController controller, String label, IconData icon,
+      {bool obscureText = false, TextInputType keyboardType = TextInputType.text}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: TextField(
@@ -166,17 +158,17 @@ class _SignUpScreenState extends State<SignUpScreen> with WidgetsBindingObserver
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(color: Colors.grey.shade600),
-          prefixIcon: Icon(icon, color: Colors.blue),
+          prefixIcon: Icon(icon, color: Colors.blueAccent),
           filled: true,
-          fillColor: Colors.grey.shade100,
+          fillColor: const Color.fromARGB(255, 255, 255, 255),
           contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16.0),
-            borderSide: BorderSide(color: Colors.blue, width: 3.5),
+            borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16.0),
-            borderSide: BorderSide(color: Colors.blue, width: 3.5),
+            borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
           ),
         ),
       ),

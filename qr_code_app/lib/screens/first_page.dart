@@ -51,7 +51,7 @@ class FirstPage extends StatelessWidget {
                     'Cadastro',
                     Icons.person_add,
                     () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => SignUpScreen()),
                       );
@@ -62,7 +62,7 @@ class FirstPage extends StatelessWidget {
                     'Login',
                     Icons.login,
                     () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => LoginPageScreen()),
                       );
