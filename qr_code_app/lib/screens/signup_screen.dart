@@ -18,7 +18,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _cpfController = TextEditingController();
   final _authService = AuthService();
 
-  // String? _cpfForQrCode;
   bool _isLoading = false;
 
   void _signUp() async {
@@ -57,9 +56,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _blocoController.clear();
     _numeroApartamentoController.clear();
     _cpfController.clear();
-    // setState(() {
-    //   _cpfForQrCode = null; // Limpa o QR Code ao limpar os campos
-    // });
   }
 
   void _showErrorDialog(String message) {
@@ -80,17 +76,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // Adiciona um listener ao controlador do CPF
-  //   _cpfController.addListener(() {
-  //     setState(() {
-  //       _cpfForQrCode = _cpfController.text.trim(); // Atualiza o QR Code conforme o CPF é digitado
-  //     });
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,54 +84,67 @@ class _SignUpScreenState extends State<SignUpScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: _nomeController,
-              decoration: InputDecoration(labelText: 'Nome'),
-            ),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Senha'),
-              obscureText: true,
-            ),
-            TextField(
-              controller: _blocoController,
-              decoration: InputDecoration(labelText: 'Bloco'),
-            ),
-            TextField(
-              controller: _numeroApartamentoController,
-              decoration: InputDecoration(labelText: 'Número Apartamento'),
-              keyboardType: TextInputType.number,
-            ),
-            TextField(
-              controller: _cpfController,
-              decoration: InputDecoration(labelText: 'CPF'),
-              // Remova obscureText: true para mostrar o CPF
-            ),
+            _buildStyledTextField(_nomeController, 'Nome', Icons.person),
+            _buildStyledTextField(_emailController, 'Email', Icons.email,
+                keyboardType: TextInputType.emailAddress),
+            _buildStyledTextField(_passwordController, 'Senha', Icons.lock,
+                obscureText: true),
+            _buildStyledTextField(_blocoController, 'Bloco', Icons.home),
+            _buildStyledTextField(_numeroApartamentoController, 'Número Apartamento',
+                Icons.home_work, keyboardType: TextInputType.number),
+            _buildStyledTextField(_cpfController, 'CPF', Icons.badge),
             SizedBox(height: 20),
             _isLoading
                 ? CircularProgressIndicator()
                 : ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 160, vertical: 15),
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
                     onPressed: _signUp,
-                    child: Text('Cadastrar'),
+                    child: Text(
+                      'Cadastrar',
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
-            SizedBox(height: 20),
-            // if (_cpfForQrCode != null && _cpfForQrCode!.isNotEmpty)
-            //   Column(
-            //     children: [
-            //       Text('QR Code para o CPF'),
-            //       QrImageView(
-            //         data: _cpfForQrCode!, // Usa o CPF atualizado
-            //         version: QrVersions.auto,
-            //         size: 200.0,
-            //       ),
-            //     ],
-            //   ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStyledTextField(
+    TextEditingController controller,
+    String label,
+    IconData icon, {
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.grey.shade600),
+          prefixIcon: Icon(icon, color: Colors.blue),
+          filled: true,
+          fillColor: Colors.grey.shade100,
+          contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16.0),
+            borderSide: BorderSide(color: Colors.blue, width: 3.5),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16.0),
+            borderSide: BorderSide(color: Colors.blue, width: 3.5),
+          ),
         ),
       ),
     );

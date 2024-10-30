@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:qr_code_app/screens/home_screen.dart';
+import 'package:qr_code_app/screens/dashboard.dart';
 
 class LoginPageScreen extends StatefulWidget {
   @override
@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login do Morador'),
+        title: Text('Login'),
         leading: Icon(Icons.home),
       ),
       body: Padding(
@@ -49,6 +49,7 @@ class _LoginPageState extends State<LoginPageScreen> {
                   controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'Email',
+                    prefixIcon: Icon(Icons.email, color: Colors.blue),
                     
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16.0),
@@ -68,6 +69,7 @@ class _LoginPageState extends State<LoginPageScreen> {
                   controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: 'Senha',
+                    prefixIcon: Icon(Icons.lock, color: Colors.blue),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16.0),
                       borderSide: BorderSide(color: Colors.blue, width: 3.5),
