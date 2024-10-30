@@ -31,11 +31,20 @@ class HomePage extends StatelessWidget {
             children: [
               TextField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Nome'),
+                decoration: InputDecoration(
+                  labelText: 'Nome',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
               ),
+              SizedBox(height: 10),
               TextField(
                 controller: _cpfController,
-                decoration: InputDecoration(labelText: 'CPF'),
+                decoration: InputDecoration(
+                  labelText: 'CPF',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
                 keyboardType: TextInputType.number,
               ),
             ],
@@ -56,11 +65,13 @@ class HomePage extends StatelessWidget {
                     await _visitorService.signUpVisitor(name, cpf);
                     Navigator.of(ctx).pop(); // Fecha o diálogo após salvar
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Visitante adicionado com sucesso!')),
+                      SnackBar(
+                          content: Text('Visitante adicionado com sucesso!')),
                     );
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Erro ao adicionar visitante: $e')),
+                      SnackBar(
+                          content: Text('Erro ao adicionar visitante: $e')),
                     );
                   }
                 } else {
@@ -133,12 +144,18 @@ class HomePage extends StatelessWidget {
             final visitor = visitors[index];
             final nome = visitor['nome'];
             final cpf = visitor['cpf'];
-            return ListTile(
-              title: Text('Nome: $nome'),
-              subtitle: Text('CPF: $cpf'),
-              trailing: IconButton(
-                icon: Icon(Icons.qr_code),
-                onPressed: () => _showQRCodeDialog(context, cpf),
+            return Card(
+              margin: EdgeInsets.symmetric(vertical: 6),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: ListTile(
+                leading: Icon(Icons.person, color: Colors.blueAccent),
+                title: Text('Nome: $nome'),
+                // subtitle: Text('CPF: $cpf'),
+                trailing: IconButton(
+                  icon: Icon(Icons.qr_code, color: Colors.blueAccent),
+                  onPressed: () => _showQRCodeDialog(context, cpf),
+                ),
               ),
             );
           },
@@ -192,10 +209,11 @@ class HomePage extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (ctx) => Scaffold(
-                  appBar: AppBar(title: Text('Visitantes')),
-                  body: _buildVisitorList(context),
-                )),
+                MaterialPageRoute(
+                    builder: (ctx) => Scaffold(
+                          appBar: AppBar(title: Text('Visitantes')),
+                          body: _buildVisitorList(context),
+                        )),
               );
             },
           ),
