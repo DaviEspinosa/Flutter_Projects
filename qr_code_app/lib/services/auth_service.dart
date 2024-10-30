@@ -5,19 +5,17 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Função para cadastrar um novo morador
   Future<User?> signUp(
       String nome, String email, String password, String bloco, String numeroApartamento, String cpf) async {
     try {
-      // Criar o usuário com email e senha no Firebase Authentication
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // Obter o usuário criado
       User? user = userCredential.user;
 
-      // Após criar o usuário, salvar informações adicionais no Firestore
       if (user != null) {
         await _firestore.collection('users').doc(user.uid).set({
           'nome': nome,
@@ -27,21 +25,27 @@ class AuthService {
         });
       }
 
-      return user; // Retorna o usuário criado
+      return user;
     } catch (e) {
-      print("Erro ao criar usuário: $e"); // Log do erro
-      throw Exception("Falha no cadastro do usuário: $e"); // Lança a exceção com o erro
+      print("Erro ao criar usuário: $e");
+      throw Exception("Falha no cadastro do usuário: $e");
     }
   }
 
-
+  // Função para cadastrar um novo visitante
   Future<void> signUpVisitor(String nome, String cpf) async {
     try {
-      // Cria o documento do visitante no Firestore usando um ID único
-      await _firestore.collection('visitors').add({
-        'nome': nome,
-        'cpf': cpf,
-      });
+      // Verifica se há um usuário logado (morador)
+      User? currentUser = _auth.currentUser;
+      if (currentUser != null) {
+        await _firestore.collection('visitors').add({
+          'nome': nome,
+          'cpf': cpf,
+          'moradorId': currentUser.uid, // Adiciona o ID do morador ao visitante
+        });
+      } else {
+        throw Exception("Nenhum morador logado.");
+      }
     } catch (e) {
       print("Erro ao criar visitante: $e");
       throw Exception("Falha no cadastro do visitante: $e");

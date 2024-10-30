@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
 
   // Método de Logout
   Future<void> _logout(BuildContext context) async {
-    await _auth.signOut();//método do FirebaseAuth
+    await _auth.signOut(); // método do FirebaseAuth
     // Redirecionando para outra página
     Navigator.pushReplacement(
       context,
@@ -27,6 +27,7 @@ class HomePage extends StatelessWidget {
     // Controladores para texto
     final TextEditingController _nameController = TextEditingController();
     final TextEditingController _cpfController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (ctx) {
@@ -66,18 +67,26 @@ class HomePage extends StatelessWidget {
               onPressed: () async {
                 String name = _nameController.text.trim();
                 String cpf = _cpfController.text.trim();
+
+                // Validação do CPF
+                RegExp cpfRegex = RegExp(r'^\d{3}\.\d{3}\.\d{3}-\d{2}$');
                 if (name.isNotEmpty && cpf.isNotEmpty) {
+                  if (!cpfRegex.hasMatch(cpf)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('CPF inválido. Utilize o formato XXX.XXX.XXX-XX.')),
+                    );
+                    return; // Interrompe a execução se o CPF for inválido
+                  }
+
                   try {
                     await _visitorService.signUpVisitor(name, cpf);
                     Navigator.of(ctx).pop(); // Fecha o diálogo após salvar
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text('Visitante adicionado com sucesso!')),
+                      SnackBar(content: Text('Visitante adicionado com sucesso!')),
                     );
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text('Erro ao adicionar visitante: $e')),
+                      SnackBar(content: Text('Erro ao adicionar visitante: $e')),
                     );
                   }
                 } else {
@@ -157,7 +166,6 @@ class HomePage extends StatelessWidget {
               child: ListTile(
                 leading: Icon(Icons.person, color: Colors.blueAccent),
                 title: Text('Nome: $nome'),
-                // subtitle: Text('CPF: $cpf'),
                 trailing: IconButton(
                   icon: Icon(Icons.qr_code, color: Colors.blueAccent),
                   onPressed: () => _showQRCodeDialog(context, cpf),

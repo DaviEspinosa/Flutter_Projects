@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qr_code_app/screens/first_page.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../services/auth_service.dart';
 
@@ -9,7 +10,9 @@ class SignUpScreen extends StatefulWidget {
   _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+
+
+class _SignUpScreenState extends State<SignUpScreen> with WidgetsBindingObserver{
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nomeController = TextEditingController();
@@ -19,6 +22,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _authService = AuthService();
 
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _signUp() async {
     String email = _emailController.text.trim();
@@ -30,6 +38,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     if (email.isEmpty || password.isEmpty || nome.isEmpty || cpf.isEmpty) {
       _showErrorDialog('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    // Validação de CPF no formato ###.###.###-##
+    RegExp cpfRegex = RegExp(r'^\d{3}\.\d{3}\.\d{3}-\d{2}$');
+    if (!cpfRegex.hasMatch(cpf)) {
+      _showErrorDialog('CPF inválido. Utilize o formato XXX.XXX.XXX-XX.');
+      return;
+    }
+
+    // Validação de senha com no mínimo 6 caracteres
+    if (password.length < 6) {
+      _showErrorDialog('A senha deve ter no mínimo 6 caracteres.');
       return;
     }
 
@@ -79,7 +100,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Cadastro')),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context, MaterialPageRoute(builder: (context) => FirstPage()),);
+              },
+            ),
+            Text('Cadastro'),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
