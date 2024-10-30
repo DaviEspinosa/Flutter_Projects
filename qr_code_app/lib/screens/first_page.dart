@@ -10,6 +10,15 @@ class FirstPage extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 24, 103, 192),
+        elevation: 0,
+        title: Text(
+          'Xcanners',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Column(
         children: [
@@ -33,6 +42,14 @@ class FirstPage extends StatelessWidget {
                     color: const Color.fromARGB(255, 255, 255, 255),
                   ),
                   SizedBox(height: 10),
+                  Text(
+                    'QR Code App',
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -65,8 +82,7 @@ class FirstPage extends StatelessWidget {
                     () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => LoginPageScreen()),
+                        MaterialPageRoute(builder: (context) => LoginPageScreen()),
                       );
                     },
                   ),
@@ -77,8 +93,7 @@ class FirstPage extends StatelessWidget {
                     () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => QRCodeScannerPage()),
+                        MaterialPageRoute(builder: (context) => QRCodeScannerPage()),
                       );
                     },
                   ),
@@ -102,13 +117,14 @@ class FirstPage extends StatelessWidget {
         minimumSize: Size(double.infinity, 60),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
           side: BorderSide(
-              color: const Color.fromARGB(255, 24, 103, 192), width: 2),
+            color: const Color.fromARGB(255, 24, 103, 192), width: 2,
+          ),
         ),
+        elevation: 5,
       ),
-      icon:
-          Icon(icon, size: 28, color: const Color.fromARGB(255, 24, 103, 192)),
+      icon: Icon(icon, size: 28, color: const Color.fromARGB(255, 24, 103, 192)),
       label: Text(
         text,
         style: TextStyle(
