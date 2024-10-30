@@ -6,12 +6,17 @@ import 'package:qr_code_app/services/auth_service.dart';
 import 'package:qr_code_app/screens/sign_in_screen.dart';
 
 class HomePage extends StatelessWidget {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  // Instanciando o serviço de Autenticação do Firebase
+  final FirebaseAuth _auth = FirebaseAuth.instance; 
+  // Instanciado classe AuthService para gerenciar Autenticação de Visitantes
   final AuthService _visitorService = AuthService();
+  // Permite acessar e manipular os dados do banco
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Método de Logout
   Future<void> _logout(BuildContext context) async {
-    await _auth.signOut();
+    await _auth.signOut();//método do FirebaseAuth
+    // Redirecionando para outra página
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => LoginPageScreen()),
@@ -19,6 +24,7 @@ class HomePage extends StatelessWidget {
   }
 
   void _showAddVisitorDialog(BuildContext context) {
+    // Controladores para texto
     final TextEditingController _nameController = TextEditingController();
     final TextEditingController _cpfController = TextEditingController();
     showDialog(
