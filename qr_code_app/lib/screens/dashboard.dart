@@ -143,40 +143,55 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildVisitorList(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('visitors').snapshots(),
-      builder: (ctx, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-        final visitors = snapshot.data?.docs ?? [];
-        if (visitors.isEmpty) {
-          return Center(child: Text('Nenhum visitante cadastrado.'));
-        }
-        return ListView.builder(
-          itemCount: visitors.length,
-          itemBuilder: (ctx, index) {
-            final visitor = visitors[index];
-            final nome = visitor['nome'];
-            final cpf = visitor['cpf'];
-            return Card(
-              margin: EdgeInsets.symmetric(vertical: 6),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              child: ListTile(
-                leading: Icon(Icons.person, color: Colors.blueAccent),
-                title: Text('Nome: $nome'),
-                trailing: IconButton(
-                  icon: Icon(Icons.qr_code, color: Colors.blueAccent),
-                  onPressed: () => _showQRCodeDialog(context, cpf),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
+  final User? user = _auth.currentUser; // Obter o usuário logado
+
+  // Verifique se o usuário está logado
+  if (user == null) {
+    return Center(child: Text('Nenhum usuário logado.'));
   }
+
+  return StreamBuilder<QuerySnapshot>(
+    stream: _firestore
+        .collection('visitors')
+        .where('moradorId', isEqualTo: user.uid) // Filtra os visitantes pelo ID do morador
+        .snapshots(),
+    builder: (ctx, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      }
+      if (snapshot.hasError) {
+        return Center(child: Text('Erro ao carregar visitantes: ${snapshot.error}'));
+      }
+      final visitors = snapshot.data?.docs ?? [];
+      if (visitors.isEmpty) {
+        return Center(child: Text('Nenhum visitante cadastrado.'));
+      }
+      return ListView.builder(
+        itemCount: visitors.length,
+        itemBuilder: (ctx, index) {
+          final visitor = visitors[index];
+          final nome = visitor['nome'];
+          final cpf = visitor['cpf'];
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 6),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ListTile(
+              leading: Icon(Icons.person, color: Colors.blueAccent),
+              title: Text('Nome: $nome'),
+              trailing: IconButton(
+                icon: Icon(Icons.qr_code, color: Colors.blueAccent),
+                onPressed: () => _showQRCodeDialog(context, cpf),
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {

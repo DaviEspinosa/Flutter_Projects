@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qr_code_app/screens/qr_scanner_screen.dart';
 import 'package:qr_code_app/screens/sign_in_screen.dart';
 import 'package:qr_code_app/screens/signup_screen.dart';
 
@@ -64,7 +65,8 @@ class FirstPage extends StatelessWidget {
                     () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginPageScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => LoginPageScreen()),
                       );
                     },
                   ),
@@ -73,7 +75,11 @@ class FirstPage extends StatelessWidget {
                     'Leitor QR Code',
                     Icons.qr_code_scanner,
                     () {
-                      // Função para o leitor de QR code
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => QRCodeScannerPage()),
+                      );
                     },
                   ),
                 ],
@@ -97,10 +103,12 @@ class FirstPage extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: const Color.fromARGB(255, 24, 103, 192), width: 2),
+          side: BorderSide(
+              color: const Color.fromARGB(255, 24, 103, 192), width: 2),
         ),
       ),
-      icon: Icon(icon, size: 28, color: const Color.fromARGB(255, 24, 103, 192)),
+      icon:
+          Icon(icon, size: 28, color: const Color.fromARGB(255, 24, 103, 192)),
       label: Text(
         text,
         style: TextStyle(
