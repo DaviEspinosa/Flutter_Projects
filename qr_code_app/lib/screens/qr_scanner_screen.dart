@@ -13,21 +13,46 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
   bool isScanning = true; // Controle de escaneamento
 
   // Função para verificar se o CPF está registrado no Firestore
-  Future<void> _checkCPF(String cpf) async {
+  Future<void> _checkAccess(String cpf) async {
     try {
-      final querySnapshot = await _firestore
+      // Verifica na coleção 'users'
+      final userSnapshot = await _firestore
           .collection('users')
           .where('cpf', isEqualTo: cpf)
           .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        setState(() {
-          message = "Acesso autorizado para o CPF: $cpf";
-        });
+      if (userSnapshot.docs.isNotEmpty) {
+        // Se encontrado na coleção 'users', navega para a página de acesso autorizado
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AccessResultPage(isAuthorized: true, cpf: cpf),
+          ),
+        );
       } else {
-        setState(() {
-          message = "CPF não encontrado";
-        });
+        // Verifica na coleção 'visitors'
+        final visitorSnapshot = await _firestore
+            .collection('visitors')
+            .where('cpf', isEqualTo: cpf)
+            .get();
+
+        if (visitorSnapshot.docs.isNotEmpty) {
+          // Se encontrado na coleção 'visitors', navega para a página de acesso autorizado
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AccessResultPage(isAuthorized: true, cpf: cpf),
+            ),
+          );
+        } else {
+          // Caso não encontrado em ambas as coleções, navega para a página de acesso não autorizado
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AccessResultPage(isAuthorized: false, cpf: cpf),
+            ),
+          );
+        }
       }
     } catch (e) {
       setState(() {
@@ -54,7 +79,7 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
               if (isScanning) {
                 final String cpf = barcodeCapture.barcodes.first.rawValue ?? "";
                 isScanning = false; // Desativa a detecção
-                _checkCPF(cpf).then((_) {
+                _checkAccess(cpf).then((_) {
                   isScanning = true; // Reativa a detecção após a verificação
                 });
               }
@@ -145,6 +170,49 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class AccessResultPage extends StatelessWidget {
+  final bool isAuthorized;
+  final String cpf;
+
+  AccessResultPage({required this.isAuthorized, required this.cpf});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Resultado do Acesso'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              isAuthorized ? Icons.check_circle : Icons.error,
+              color: isAuthorized ? Colors.green : Colors.red,
+              size: 100,
+            ),
+            SizedBox(height: 20),
+            Text(
+              isAuthorized
+                  ? "Acesso autorizado para o CPF: $cpf"
+                  : "Acesso negado para o CPF: $cpf",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Volta para a tela anterior
+              },
+              child: Text('Voltar'),
+            ),
+          ],
+        ),
       ),
     );
   }
