@@ -6,7 +6,7 @@
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
-        android:label="qr_code_app"
+        android:label="Xcanner"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
