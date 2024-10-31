@@ -1,22 +1,23 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qr_code_app/services/auth_service.dart';
 import 'package:qr_code_app/screens/sign_in_screen.dart';
+import 'package:path_provider/path_provider.dart'; // Para acessar o diretório de armazenamento
+import 'package:screenshot/screenshot.dart';
 
 class HomePage extends StatelessWidget {
-  // Instanciando o serviço de Autenticação do Firebase
-  final FirebaseAuth _auth = FirebaseAuth.instance; 
-  // Instanciado classe AuthService para gerenciar Autenticação de Visitantes
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final AuthService _visitorService = AuthService();
-  // Permite acessar e manipular os dados do banco
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  
+  // Controlador de captura de tela
+  final ScreenshotController _screenshotController = ScreenshotController();
 
-  // Método de Logout
   Future<void> _logout(BuildContext context) async {
-    await _auth.signOut(); // método do FirebaseAuth
-    // Redirecionando para outra página
+    await _auth.signOut();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => LoginPageScreen()),
@@ -24,10 +25,8 @@ class HomePage extends StatelessWidget {
   }
 
   void _showAddVisitorDialog(BuildContext context) {
-    // Controladores para texto
     final TextEditingController _nameController = TextEditingController();
     final TextEditingController _cpfController = TextEditingController();
-
     showDialog(
       context: context,
       builder: (ctx) {
@@ -40,8 +39,7 @@ class HomePage extends StatelessWidget {
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: 'Nome',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 ),
               ),
               SizedBox(height: 10),
@@ -49,8 +47,7 @@ class HomePage extends StatelessWidget {
                 controller: _cpfController,
                 decoration: InputDecoration(
                   labelText: 'CPF',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 ),
                 keyboardType: TextInputType.number,
               ),
@@ -58,29 +55,24 @@ class HomePage extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop(); // Fecha o diálogo sem salvar
-              },
+              onPressed: () => Navigator.of(ctx).pop(),
               child: Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
                 String name = _nameController.text.trim();
                 String cpf = _cpfController.text.trim();
-
-                // Validação do CPF
                 RegExp cpfRegex = RegExp(r'^\d{3}\.\d{3}\.\d{3}-\d{2}$');
                 if (name.isNotEmpty && cpf.isNotEmpty) {
                   if (!cpfRegex.hasMatch(cpf)) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('CPF inválido. Utilize o formato XXX.XXX.XXX-XX.')),
                     );
-                    return; // Interrompe a execução se o CPF for inválido
+                    return;
                   }
-
                   try {
                     await _visitorService.signUpVisitor(name, cpf);
-                    Navigator.of(ctx).pop(); // Fecha o diálogo após salvar
+                    Navigator.of(ctx).pop();
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Visitante adicionado com sucesso!')),
                     );
@@ -103,8 +95,9 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _showQRCodeDialog(BuildContext context, String cpf) {
+  void _showQRCodeDialog(BuildContext context, String cpf, String name) {
     showDialog(
+
       context: context,
       builder: (ctx) {
         return Dialog(
@@ -122,16 +115,34 @@ class HomePage extends StatelessWidget {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 16),
-                QrImageView(
-                  data: cpf,
-                  version: QrVersions.auto,
-                  size: 200.0,
+                Screenshot(
+                  controller: _screenshotController,
+                  child: QrImageView(
+                    data: cpf,
+                    version: QrVersions.auto,
+                    size: 200.0,
+                    backgroundColor: Colors.white,
+                  ),
                 ),
                 SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop(); // Fecha o diálogo
+                  onPressed: () async {
+                    // Captura a tela e salva a imagem
+                    // final directory = await getExternalStorageDirectory();
+                    final directory = Directory('storage/emulated/0/Download');
+                    final image = await _screenshotController.capture();
+                    final filePath = '${directory.path}/QRCode_$name.png';
+                    final file = File(filePath);
+                    await file.writeAsBytes(image!);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('QR Code salvo em: $filePath')),
+                    );
+                    Navigator.of(ctx).pop();
                   },
+                  child: Text('Baixar QR Code'),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
                   child: Text('Fechar'),
                 ),
               ],
@@ -142,7 +153,8 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildVisitorList(BuildContext context) {
+  // Resto do código permanece o mesmo
+Widget _buildVisitorList(BuildContext context) {
   final User? user = _auth.currentUser; // Obter o usuário logado
 
   // Verifique se o usuário está logado
@@ -182,7 +194,7 @@ class HomePage extends StatelessWidget {
               title: Text('Nome: $nome'),
               trailing: IconButton(
                 icon: Icon(Icons.qr_code, color: Colors.blueAccent),
-                onPressed: () => _showQRCodeDialog(context, cpf),
+                onPressed: () => _showQRCodeDialog(context, cpf, nome),
               ),
             ),
           );
