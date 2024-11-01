@@ -4,12 +4,11 @@
 
 ### 📜 **Sobre o que é e qual sua importância?**
 
-**Xcanner** é um sistema de controle de acesso de visitantes, que visa:
+**O Xcanner é um sistema avançado de controle de acesso para visitantes, projetado para aprimorar:**
 
-1. **A segurança do condomínio** de casas ou apartamentos.
-2. **A eficiência e eficácia** na restrição e na entrada de visitantes.
-3. **Facilitar a comunicação** da portaria com o morador.
-
+- A segurança do condomínio, seja de casas ou apartamentos, proporcionando um ambiente mais protegido para todos os moradores.
+- A eficiência e a eficácia no controle e na restrição da entrada de visitantes, garantindo que apenas pessoas autorizadas tenham acesso.
+- A comunicação entre a portaria e os moradores, facilitando o fluxo de informações e tornando o processo de autorização mais ágil e transparente.
 ---
 
 ### 🎯 **Objetivos Principais**
@@ -27,6 +26,7 @@
 
 - **Entrada do Morador** no sistema (Login).
 - **Cadastro do Visitante** (Nome Completo e CPF).
+- **Exclusão de Visitantes**
 - **Visualização dos Visitantes** cadastrados.
 - Visitante cadastrado, será gerado um **QR-Code** com base no CPF.
 - **Baixar o QR-Code** gerado, que será armazenado em sua galeria, para enviar ao visitante (e-mail, WhatsApp, etc.).
