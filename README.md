@@ -49,11 +49,19 @@
 | Geração e Leitura de QR Codes          | 48 Horas   | Criação de QR Codes para identificação dos visitantes.                             |
 | Testes e Ajustes             | 24 Horas   | Avaliação da usabilidade e ajustes necessários após testes.                        |
 
+<hr>
 
 ### Recursos
 
 - **Humanos**: 4 Desenvolvedores Flutter
-- **Técnicos**: Ferramentas de desenvolvimento (VS Code), controle de versão Git, Firebase para autenticação e Firestore, biblioteca qr_flutter, mobile_scanner.
+- **Técnicos**: Ferramentas de desenvolvimento (VS Code), controle de versão Git, Firebase para autenticação e Firestore
+- Biblioteca
+    - qr_flutter - para geração do qr-code, pelo cpf
+    - mobile_scanner - para scannear o qr-code, então ele decifra o cpf e compara com o que está no banco
+    - path-provider - para armazenar a imagem do qr-code
+    - permission_handler - para ativar câmera do celular 
+
+<hr>
 
 - Diagrama de Fluxo
     - Leitor
