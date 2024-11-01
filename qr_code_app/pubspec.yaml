@@ -60,12 +60,13 @@
   # For information on the generic Dart part of this file, see the
   # following page: https://dart.dev/tools/pub/pubspec
   assets:
-   - assets/logo.png
+   - assets/logo_ofc.png
 
   flutter_icons:
     android: true
     ios: true
-    image_path: "assets/logo.png"
+    image_path: "assets/logo_ofc.png"
+    adaptive_icon_foreground: "assets/logo_ofc.png"
   # The following section is specific to Flutter packages.
   flutter:
 

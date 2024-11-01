@@ -153,57 +153,79 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // Resto do código permanece o mesmo
-Widget _buildVisitorList(BuildContext context) {
-  final User? user = _auth.currentUser; // Obter o usuário logado
-
-  // Verifique se o usuário está logado
-  if (user == null) {
-    return Center(child: Text('Nenhum usuário logado.'));
+  // Função para excluir visitante
+  Future<void> _deleteVisitor(BuildContext context, String visitorId) async {
+    try {
+      await _firestore.collection('visitors').doc(visitorId).delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Visitante excluído com sucesso!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao excluir visitante: $e')),
+      );
+    }
   }
 
-  return StreamBuilder<QuerySnapshot>(
-    stream: _firestore
-        .collection('visitors')
-        .where('moradorId', isEqualTo: user.uid) // Filtra os visitantes pelo ID do morador
-        .snapshots(),
-    builder: (ctx, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Center(child: CircularProgressIndicator());
-      }
-      if (snapshot.hasError) {
-        return Center(child: Text('Erro ao carregar visitantes: ${snapshot.error}'));
-      }
-      final visitors = snapshot.data?.docs ?? [];
-      if (visitors.isEmpty) {
-        return Center(child: Text('Nenhum visitante cadastrado.'));
-      }
-      return ListView.builder(
-        itemCount: visitors.length,
-        itemBuilder: (ctx, index) {
-          final visitor = visitors[index];
-          final nome = visitor['nome'];
-          final cpf = visitor['cpf'];
-          return Card(
-            margin: EdgeInsets.symmetric(vertical: 6),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ListTile(
-              leading: Icon(Icons.person, color: Colors.blueAccent),
-              title: Text('Nome: $nome'),
-              trailing: IconButton(
-                icon: Icon(Icons.qr_code, color: Colors.blueAccent),
-                onPressed: () => _showQRCodeDialog(context, cpf, nome),
-              ),
-            ),
-          );
-        },
-      );
-    },
-  );
-}
+ Widget _buildVisitorList(BuildContext context) {
+    final User? user = _auth.currentUser;
 
+    if (user == null) {
+      return Center(child: Text('Nenhum usuário logado.'));
+    }
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore
+          .collection('visitors')
+          .where('moradorId', isEqualTo: user.uid)
+          .snapshots(),
+      builder: (ctx, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Erro ao carregar visitantes: ${snapshot.error}'));
+        }
+        final visitors = snapshot.data?.docs ?? [];
+        if (visitors.isEmpty) {
+          return Center(child: Text('Nenhum visitante cadastrado.'));
+        }
+        return ListView.builder(
+          itemCount: visitors.length,
+          itemBuilder: (ctx, index) {
+            final visitor = visitors[index];
+            final nome = visitor['nome'];
+            final cpf = visitor['cpf'];
+            final visitorId = visitor.id;
+
+            return Card(
+              margin: EdgeInsets.symmetric(vertical: 6),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                leading: Icon(Icons.person, color: Colors.blueAccent),
+                title: Text('Nome: $nome'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.qr_code, color: Colors.blueAccent),
+                      onPressed: () => _showQRCodeDialog(context, cpf, nome),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.redAccent),
+                      onPressed: () => _deleteVisitor(context, visitorId),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
